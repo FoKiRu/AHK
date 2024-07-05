@@ -1,0 +1,4 @@
+﻿#SingleInstance,force
+
+if (ColorName  "" AND not FindColor(ColorName))
+	MsgBox %ColorName% не может быть найден.

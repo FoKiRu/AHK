@@ -1,0 +1,19 @@
+ftp> open host.domain.com
+host.domain.com: неизвестный узел.
+ftp> username
+Недопустимая команда.
+ftp> password
+Недопустимая команда.
+ftp> binary
+Нет связи.
+ftp> cd htdocs
+Нет связи.
+ftp> put 
+Нет связи.
+ftp> delete SomeOtherFile.htm
+Нет связи.
+ftp> rename OldFileName.htm NewFileName.htm
+Нет связи.
+ftp> ls -l23
+Нет связи.
+ftp> quit

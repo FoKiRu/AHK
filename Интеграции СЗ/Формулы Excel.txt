@@ -1,0 +1,202 @@
+=ТЕКСТ("значение"/86400;"ЧЧ:ММ:СС")
+Формула переводит секунды в часы формата ЧЧ:ММ:СС
+
+=СЧЁТ(ПОИСК("Заполнить лид";E:E;1))
+Считает сколько нашел "значение"
+
+=СЧЁТЗ(A:A)-1
+Считает сколько строк в столбце
+
+16.03-31.03 Доступен
+
+=ТЕКСТ(СУММ()/86400;"ЧЧ:ММ:СС")
+
+
+Sub FindFirstTableOnActiveSheet()
+    Dim ws As Worksheet
+    Dim lst As ListObject
+    Dim filteredRows As Long
+    Dim filteredRowsSum As Long
+    Dim iCol As Integer
+    Dim rng As Range
+    
+    
+    
+    ' Устанавливаем ссылку на активный лист
+    Set ws = ActiveSheet
+    
+    ' Проверяем, есть ли таблицы на листе
+    If ws.ListObjects.Count > 0 Then
+        ' Получаем первую таблицу на листе
+        Set lst = ws.ListObjects(1)
+    End If
+    
+    
+        ' Проверяем, есть ли фильтр
+    If Not lst.AutoFilter Is Nothing Then
+        ' Находим индекс столбца "Длит-ть (сек.)" в таблице
+        iCol = lst.ListColumns("Длит-ть (сек.)").Index
+        
+        ' Получаем диапазон отфильтрованных ячеек в столбце, исключая заголовок
+        Set rng = lst.DataBodyRange.Columns(iCol).SpecialCells(xlCellTypeVisible)
+        
+        ' Считаем количество отфильтрованных ячеек
+        filteredRows = rng.Cells.Count
+        ' Считаем сумму отфильтрованных ячеек
+        filteredRowsSum = Application.WorksheetFunction.Sum(rng)
+    Else
+        ' Если фильтр не применен, возвращаем общее количество строк
+        filteredRows = lst.ListRows.Count
+    End If
+    
+    ' Выводим результат на экран
+    MsgBox "Количество видимых строк в столбце 'Длит-ть (сек.)': " & CStr(filteredRows) & vbNewLine & _
+            "Сумма видимых строк в столбце 'Длит-ть (сек.)': " & CStr(filteredRowsSum)
+
+End Sub
+
+
+
+
+
+
+Макрос Оставить только один определенный фильтр
+
+ActiveSheet.Range("$A$1:$AA$682").AutoFilter Field:=4, Criteria1:= _
+	"Название фильтра"
+	
+[П14] [Н.Д.] ABC.DATA: РЕГИОНЫ
+[П3] Тихомиров НСК
+[П5] ABC.DATA: РЕГИОНЫ (бывш Ростов)
+[П61] ЧФК Недвижимость КРДР
+
+
+    Columns("V:V").Select
+    Selection.Copy
+    Sheets.Add After:=ActiveSheet
+    Range("A1").Select
+    ActiveSheet.Paste
+    Range("B1").Select
+    Application.CutCopyMode = False
+    ActiveCell.FormulaR1C1 = "=TEXT(SUM(C[-2])/86400,""ЧЧ:ММ:СС"")"
+    Range("A1").Select
+    ActiveCell.FormulaR1C1 = "[П14] [Н.Д.] ABC.DATA: РЕГИОНЫ"
+    Range("V13").Select
+	
+	
+	
+Sub ПроверкаЗначения()
+    Dim ws As Worksheet
+    Dim rng As Range
+    Dim cell As Range
+    Dim found As Boolean
+    
+    Set ws = ThisWorkbook.Sheets("Sheet1") ' Замените "Sheet1" на имя вашего листа
+
+    Set rng = ws.AutoFilter.Range
+    found = False
+    
+    If Not rng Is Nothing Then
+        If rng.Columns.Count >= 4 Then
+            For Each cell In rng.Columns(4).Cells ' Проверяем 4 столбец (столбец D)
+                If cell.Value = "[П14]" Then
+                    found = True
+                    Exit For
+                End If
+            Next cell
+        End If
+    End If
+
+    If found Then
+        MsgBox "Ок" ' Вывести сообщение "Ок"
+    End If
+End Sub
+' Ищет определенный филтр.
+
+
+
+Sub Найти_и_Выделить_Ячейку()
+'
+' Макрос1 Макрос
+'
+
+'
+    Dim searchValue As String
+    Dim foundCell As Range
+    
+    searchValue = "[П3] Тихомиров НСК"
+    
+    ' Выполняем поиск
+    Set foundCell = Columns("D:D").Find(What:=searchValue, LookIn:=xlValues, LookAt:=xlWhole)
+    
+    ' Проверяем, найдена ли ячейка
+    If Not foundCell Is Nothing Then
+        ' Выделяем ячейку
+        foundCell.Select
+    Else
+        MsgBox "Ячейка с значением '" & searchValue & "' не найдена в столбце D.", vbExclamation
+    End If
+End Sub
+' Этот макрос работает, след. образом, если после прим. фильтра находит знач., то выделяет его. Если не находит, а вне фильтра значение есть, 
+' Выводит ошибка, как надо.
+
+
+
+
+
+
+Sub Найти_и_Выделить_Ячейку()
+
+    Dim searchValue As Variant
+    Dim foundCell As Range
+    Dim searchValues As Variant
+    Dim i As Integer
+
+    ' Создаем массив значений для поиска
+    searchValues = Array("[П3] Тихомиров НСК", "[П4] Иванов МФК", "[П5] Петров СК")
+
+    ' Проходим по массиву значений для поиска
+    For i = LBound(searchValues) To UBound(searchValues)
+        searchValue = searchValues(i)
+        
+        ' Выполняем поиск
+        Set foundCell = Columns("D:D").Find(What:=searchValue, LookIn:=xlValues, LookAt:=xlWhole)
+        
+        ' Проверяем, найдена ли ячейка
+        If Not foundCell Is Nothing Then
+            ' Выделяем найденную ячейку
+            foundCell.Select
+            Exit For ' Выход из цикла после первого найденного значения
+        End If
+        
+    Next i
+
+    ' Проверяем, была ли найдена хотя бы одна ячейка
+    If foundCell Is Nothing Then
+        MsgBox "Ячейка с одним из значений не найдена в столбце D.", vbExclamation
+    End If
+
+End Sub
+' Версия с массивом, в данный момент актуально.
+
+
+
+
+
+Sub CountFiltersInColumn4()
+    Dim ws As Worksheet
+    Dim filterCount As Integer
+    
+    ' Указываем рабочий лист, на котором находится таблица
+    Set ws = ThisWorkbook.Sheets("Sheet1") ' Укажите нужное имя листа
+    
+    ' Проверяем, есть ли фильтр в четвертом столбце
+    If ws.AutoFilterMode Then
+        filterCount = ws.AutoFilter.Filters(4).Count
+        
+        MsgBox "Количество фильтров в четвертом столбце: " & filterCount
+    Else
+        MsgBox "На листе нет установленных фильтров."
+    End If
+End Sub
+' Показывает сколько фильтров используется.

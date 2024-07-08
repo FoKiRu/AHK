@@ -1,0 +1,227 @@
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #EEE7D6;
+  }
+  .container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0);
+    background: #F9F6F0; /* Цвет колнтейнера */ 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header-content, .promo-content {
+    display: flex;
+    flex-direction: column;
+  }
+  .header-logo, .promo-title {
+    font-size: 48px;
+    color: black;
+    margin-bottom: 20px;
+  }
+  .header-description, .promo-description {
+    font-size: 16px;
+    margin-bottom: 20px;
+    max-width: 500px; /* Максимальная ширина для текста */
+  }
+  .header-menu {
+    display: flex;
+    gap: 20px;
+  }
+  .header-menu button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: black;
+    background: none;
+    border: 2px solid black;
+    cursor: pointer;
+  }
+  .header-menu button:hover {
+    background-color: black;
+    color: white;
+  }
+  .header-image, .promo-image {
+    max-width: 36%;
+    height: 40%;
+  }
+  .promo-content {
+    display: flex;
+    justify-content: space-between;
+  }
+  .promo-text-right {
+    flex: 1;
+    margin-left: 200px; /* Отступ слева */
+    margin-top: 0px;
+  }
+  .promo-text-left {
+    flex: 1;
+	margin-right: 150px; /* Отступ слева */
+	margin-top: 100px;
+	margin-bottom: 182px;
+  }
+    .fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+  .fullscreen img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+  .left-align {
+    float: left;
+    width: 30px;
+  }
+  .nav {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    background: #ffffff; /* фоновый цвет для меню */
+    position: fixed; /* Фиксированное положение */
+    top: 0; /* Прижимаем к верху страницы */
+    width: 100%; /* Ширина меню равна ширине страницы */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Небольшая тень для визуального выделения */
+    z-index: 1000; /* Убедимся, что меню всегда наверху других элементов */
+  }
+  .nav a {
+    text-decoration: none;
+    color: #501414; /* Тёмно-красный цвет */
+    margin: 0 15px;
+    font-size: 1.2em;
+    padding: 5px 10px;
+    transition: transform 0.3s, background-color 0.3s;
+  }
+  .nav a:hover {
+    transform: scale(1.1);
+    background-color: #c81d31; /* Ярко-красный цвет */
+    color: white;
+    border-radius: 5px;
+  }
+  .delivery-container {
+  display: flex;
+  max-width: 1200px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px; /* Высота контейнера, достаточная для вертикального центрирования */
+  margin: auto; /* Автоматический отступ для горизонтального центрирования */
+  width: 100%;
+}
+/* Задаем ширину столбцов */
+.col1, .col2 { width: 425px; }
+
+/* Высота строк */
+td, th { height: 55px; font-size: 22px; padding: 10px; } /* Устанавливаем отступы в ячейках */
+
+/* Чередующиеся цвета строк с прозрачностью */
+tr:nth-child(odd) { background-color: #F9F6F0; } /* Светло-бежевый */
+tr:nth-child(even) { background-color: #EDE7D6; } /* Слегка темнее бежевый */
+
+/* Стилизация заголовка */
+th { 
+    background-color: #464237; /* Темно-серый цвет для фона */
+    color: white; /* Цвет текста остается белым */
+}
+.delivery-form {
+  background: #F9F6F0; /* Цвет фона для формы */
+  padding: 10px;
+  margin: 50px 0; /* Отступы сверху и снизу */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Тень вокруг формы */
+  text-align: left;
+}
+
+.delivery-form h2 {
+  color: #501414;
+}
+
+.delivery-form form {
+  margin-top: 20px;
+}
+
+.delivery-form label {
+  margin-right: 10px;
+}
+
+.delivery-form input[type="text"] {
+  width: 300px; /* Ширина поля для ввода */
+  padding: 10px;
+  margin-bottom: 10px; /* Отступ снизу */
+}
+
+.delivery-form button {
+  background-color: #c81d31; /* Ярко-красный цвет */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.delivery-form button:hover {
+  background-color: #501414; /* Тёмно-красный цвет при наведении */
+}
+
+.button-container {
+  display: flex;
+  justify-content: center; /* Центрирование содержимого по горизонтали */
+  margin-top: 20px; /* Отступ сверху, если нужно */
+}
+
+.delivery-form form {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Выравнивание всех элементов формы по центру */
+}
+  .html1 {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background-color: #474237;
+  }
+
+  .container1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 755px; /* Высота внешнего контейнера */
+    width: 100%; /* Ширина по всему экрану */
+  }
+
+  .inner-box1 {
+    background-color: #F9F6F0;
+    width: 990px; /* Ширина внутреннего прямоугольника */
+    height: 500px; /* Высота внутреннего прямоугольника */
+    border-radius: 10px; /* Закругленные углы */
+    padding: 20px;
+    box-sizing: border-box; /* Учет padding в общей ширине и высоте */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  h1 {
+    margin-top: 0;
+  }
+
+  p {
+    text-align: justify;
+    line-height: 1.6;
+  }
+</style>

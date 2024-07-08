@@ -1,0 +1,198 @@
+Sub РедактированиеТаблицыДляЗаполнения()
+' Макрос работает отлично. Убирает тех кто небыл в разговоре.
+' Первая часть, убирает
+    Dim ws As Worksheet
+    Dim rng As Range, cell As Range
+    Dim lastRow As Long
+    
+    ' Определение активного листа
+    Set ws = ActiveSheet
+    
+    ' Определение последней заполненной строки в столбце E
+    lastRow = ws.Cells(ws.Rows.Count, "F").End(xlUp).Row
+    
+    ' Перебор ячеек в столбце E, начиная со строки 2 (предполагаем, что первая строка - заголовок)
+    For i = lastRow To 2 Step -1 ' Идем в обратном порядке, чтобы корректно удалять строки
+        If IsNumeric(ws.Cells(i, "F").Value) Then ' Проверка, содержит ли ячейка числовое значение
+            If ws.Cells(i, "F").Value < 100 Then ' Проверка, является ли число меньше 100
+                ' Удаление строки, если число меньше 100
+                ws.Rows(i).Delete
+            End If
+        End If
+    Next i
+    
+    
+' Вторая часть, создает таблицу
+    Dim tbl As ListObject
+    ' Поиск последней ячейки с данными
+    Set rng = ws.Cells.Find(What:="*", _
+                            After:=ws.Cells(1, 1), _
+                            LookIn:=xlFormulas, _
+                            LookAt:=xlPart, _
+                            SearchOrder:=xlByColumns, _
+                            SearchDirection:=xlPrevious, _
+                            MatchCase:=False)
+    
+    ' Если найдена хотя бы одна ячейка с данными
+    If Not rng Is Nothing Then
+        ' Создание таблицы
+        Set tbl = ws.ListObjects.Add(xlSrcRange, Range("A1:" & rng.Address), , xlYes)
+        tbl.Name = "TextTable"              ' Имя таблицы
+        tbl.TableStyle = "TableStyleLight1" ' Выберите стиль таблицы по вашему вкусу
+    End If
+    
+' Третья часть, переставляет столбцы
+    Columns("G:G").Select
+    Selection.Cut
+    Columns("D:D").Select
+    Selection.Insert Shift:=xlToRight
+    Columns("F:F").Select
+    Selection.Cut
+    Columns("E:E").Select
+    Selection.Insert Shift:=xlToRight
+    Columns("C:C").Select
+    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+    Columns("H:N").Select
+    Selection.Delete Shift:=xlToLeft
+    Columns("B:B").EntireColumn.AutoFit
+    Columns("D:D").Select
+    Selection.ClearContents
+    Range("B2").Select
+    Selection.Copy
+    Range("C2").Select
+    
+' Что можно добавить?
+' 1) Столбец1 и стоблец 2 можно переименновать
+' 2) Применить формулу к E:G =ТЕКСТ(СУММ(A:A)/86400;"ЧЧ:ММ:СС")
+
+End Sub
+
+
+
+
+
+Макрос для форматирование тыблицы Call total Sheet1
+Sub Макрос1()
+'
+' Макрос1 Макрос
+'
+
+'
+    Dim ws As Worksheet
+    Dim rng As Range, lastRow As Long
+    Dim tbl As ListObject
+    
+    ' Определение активного листа
+    Set ws = ActiveSheet
+    
+    ' Определение последней строки с данными
+    lastRow = ws.Cells(ws.Rows.Count, 1).End(xlUp).Row
+    
+    ' Проверка наличия данных
+    If lastRow > 1 Then
+        ' Определение диапазона для таблицы (все строки от A1 до последней строки с данными)
+        Set rng = ws.Range("A1").Resize(lastRow, ws.UsedRange.Columns.Count)
+        
+        ' Создание таблицы
+        Set tbl = ws.ListObjects.Add(xlSrcRange, rng, , xlYes)
+        tbl.Name = "Таблица1"              ' Имя таблицы
+        tbl.TableStyle = "TableStyleLight1" ' Выберите стиль таблицы по вашему вкусу
+    End If
+    
+    Range("Таблица1[#All]").Select
+    ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.ListObjects("Таблица1"), _
+        "Сценарий").Slicers.Add ActiveSheet, , "Сценарий", "Сценарий", 189.75, 639.75, _
+        144, 210
+    ActiveSheet.Shapes.Range(Array("Сценарий")).Select
+    Columns("M:R").Select
+    Selection.ColumnWidth = 0 ' используется для установки ширины колонки равной 0.
+End Sub
+
+
+
+Sub Найти_и_Выделить_Ячейку()
+'
+' Найти_и_Выделить_Ячейку Макрос
+' Находит имя сценария из массива, копирует столбец длительности в секундах. Создает новый лист, вставляет  название сценария и формули с итогом общего времени.
+'
+' Сочетание клавиш: Ctrl+Shift+E
+'
+    Dim searchValue As Variant
+    Dim foundCell As Range
+    Dim searchValues As Variant
+    Dim i As Integer
+    Dim myVariable As String
+    Dim myVar As Variant
+
+    ' Создаем массив значений для поиска
+    searchValues = Array("[П10] АН Империя Калининград", "Обзвон роботом", "бывш. СС Дубаи", "[П17] ABC Авто (бывший Рольф Москвич)", "[П11] АН ЦЖР Рязань", _
+"[П2] СевСтолица СПБ", "[П20] АН ПоКров Омск [бывш. Крым Море Град]", "[П1] ОМР Металл", "Турция СПБ", "[П4] Алиро Окна Краснодар", _
+"Стрижи НСК", "[П6] Неометрия Отражение Краснодар", "[П14] [Н.Д.] ABC.DATA: РЕГИОНЫ", "ЭтажиВоронеж", "[П13] АН ГИЦ Самара", "Кредикс Credix", _
+"[П9] АН Домос ЕКБ", "[П15] ABC ЗАГРАН ( бывший Улыбка Краснодар)", "[П16] АН Паритет Воронеж [бывш. АН РИО]", "[П8] Неометрия 1799 Ростов", _
+"[П7] Неометрия Облака Новороссийск", "[П19] ИнтерЛизинг (из Рольф Чери)", "[П18] Диалог-Авто ЧЕРИ (из Рольф Омода)", "[П12] АН Click Пермь", "ABC.DATA: Казань", "[П5] ABC.DATA: РЕГИОНЫ (бывш Ростов)", "ЧПУ Проект 1", "Интерглобал СП РФ Проект 2", "[П49] Пакка Линии Розлива [Проект 3]", _
+"[П50] АН1 НСК [Проект 4]", "АН Уфа Макромир Проект 5", "Century 21 Ростов [ВЕК21 Проект 6]", "АН Свои стены ЕКБ [Проект 7]", "АН Риком РнД[Проект 8]", _
+"АН Мистер Фогг ОМСК [Проект 9]", "КБ Аспект ЕКБ [Проект 10]", "ABC.DATA: Санкт-Петербург", "ABC.DATA: Екатеринбург", "ABC.DATA: Тюмень", "ABC.DATA: Краснодар", "BC.DATA: Новосибирск", "Хелп Консалтинг1", "Хелп Консалтинг2", "Хелп Консалтинг3", "[П5] ABC.DATA: Москва", "Трубаров", "Неометрия Вместе Ростов (копия)", " Трубаров2", "[П21] АН АЯКС Пенза", "[П22] АН MNS Самара", "[П23] АН Анреал Тюмень", "[КЦ ЗВОНКО] ЛАБОРАТОРИЯ МЫСЛИ", "[П24] АН Новострой Астрахань", "[П25] АН Аквариум Омск", "[П26] АН Добрая душа Уфа", "[П27] АН АН Арион Group ТМН", "[П28] АН Rialtor Group НСК", "[П29] АН ИИ Тюмень", "П30] АН Недвижимость Калининград", "[П31] АН Свои Люди", "[П32] АН ТН Тула", "[П33] АН Агент026 Ставрополь", "[П34] АН Сити-Центр Воронеж", "[П35] Фолиант Владивосток", "[П36] Трак Импорт Самосвалы", "[П37] РТА Спецтехника", "[П38] АН Жилфонд Брянск", "[П39]&nbsp;АН&nbsp;Грант&nbsp;Самара", "[П40]&nbsp;АН&nbsp;Метраж Барнаул", "П41]&nbsp;АН&nbsp;Мирами Кемерово", _
+"[П42] АН Владис Ижевск", "П43] Экскаваторы ТракРесурс-Регион", "[П44] Свободная 4", "[П45] ЦАН Тула", "[П46] Контрол-Лизинг (CTRL)", "П47] АН Самолет Плюс Челябинск", "[П48] Запаска 4", "[П49] Запаска 5", "[П3] Тихомиров НСК", _
+"[П51] АН Зилант Казань", "[П79] АН Винсент Недвижимость Сочи", "[П47] АН Самолет Плюс Челябинск", "П52] Электрообогрев СПБ", "[П53] АН ПервоЗдание  Астрахань", "[П54] Ульяновск АН Самолет Плюс", "[П55] Русстанок Самара", "[П56] 1", "[П57] АН Я Дома Томск", "[П58] АН 43 Киров", "[П59] АН МИРА Ставрополь", "[П60] Самолет+ ЧЛБ", "[П61] ЧФК Недвижимость КРДР", "[П62] АН КвартираНова Пенза", "[П63] АН Жилфонд Хабаровск", "[П64] ПрофИндустрия ЕКБ", "[П65] Идеальная Кровля", "[П66] Склад Юнифайд", "[П67] АН Нова Томск", "[П68] РСБ Логистик", "[П69] Лига Групп", "[П70] Ажурсталь ЧЛБ", "[П71] Realrez", "[П72] СМК СП Красноярск", "[ЗВОНКО] Рекрутинг [Рекрутер]", "[ЗВОНКО] Рекрутинг [Оператор]", "[П73] БАЗИС", "[П74] Теплый Контур", "[П75] Корпорация Металлинвест РФ", "[П76] Юнион Авто Владивосток", "[П77] НОВА Механика", "[П78] АН Владис Липецк", "[П79] Запаска", "[П80] Запаск")
+    ' , "Интерглобал СП РФ Проект 2"
+    
+    ' Проходим по массиву значений для поиска
+    For i = LBound(searchValues) To UBound(searchValues)
+        searchValue = searchValues(i)
+        
+        ' Выполняем поиск
+        Set foundCell = Columns("D:D").Find(What:=searchValue, LookIn:=xlValues, LookAt:=xlWhole)
+        
+        ' Проверяем, найдена ли ячейка
+        If Not foundCell Is Nothing Then
+            ' Выделяем найденную ячейку
+            foundCell.Select
+            myVariable = Selection.Value
+                Columns("V:V").Select
+                Selection.Copy
+                Sheets.Add After:=ActiveSheet
+                Range("A1").Select
+                ActiveSheet.Paste
+                Range("B1").Select
+                Application.CutCopyMode = False
+                ActiveCell.FormulaR1C1 = "=TEXT(SUM(C[-1])/86400,""ЧЧ:ММ:СС"")"
+                    Selection.Copy
+                    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+                    :=False, Transpose:=False
+                    ActiveSheet.Paste
+                    Application.CutCopyMode = False
+                Columns("A:A").Select
+                Selection.ClearContents
+                Range("A1").Select
+                ActiveCell.FormulaR1C1 = myVariable
+                Range("A1:B1").Select
+                Selection.Copy
+                ActiveSheet.Next.Select
+                ActiveSheet.Paste
+                ActiveSheet.Previous.Select
+                Application.DisplayAlerts = False ' Отключаем отображение окон подтверждения удаления
+                ActiveSheet.Delete ' Удаляем активный лист
+                Application.DisplayAlerts = True ' Включаем обратно отображение окон подтверждения удаления
+                ActiveCell.Offset(1, -1).Select ' Перемещаемся на одну ячейку вниз от текущей активной ячейки
+                myVar = ActiveCell.Value ' Копируем содержимое активной ячейки
+                ActiveCell.Offset(0, 1).Select
+                    Sheets("Sheet1").Select
+                    ActiveSheet.ListObjects("Таблица2").Range.AutoFilter Field:=3, Criteria1:=myVar
+                    Range("A1").Select
+                    '123
+            Exit For ' Выход из цикла после первого найденного значения
+        End If
+        
+        
+        
+    Next i
+
+    ' Проверяем, была ли найдена хотя бы одна ячейка
+    If foundCell Is Nothing Then
+        MsgBox "Ячейка с одним из значений не найдена в столбце D.", vbExclamation
+    ' Else
+        ' MsgBox myVariable
+    End If
+
+End Sub
+

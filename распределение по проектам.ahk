@@ -1,10 +1,19 @@
 ﻿#SingleInstance,force
 
 
+Numpad2::
+IfWinActive, [ЛидгенБюро] распределение по проектам - Google Таблицы - Google Chrome
+If WinExist("[ЛидгенБюро] распределение по проектам - Google Таблицы - Google Chrome")
+WinActivate ; Активирует найденное окно.
+MsgBox, [ Options, Title, Активно, Timeout]
+Return
+
 ; Скрипт выполняет комбинацию +{down 3}^{c} при нажатии на numpad1 и выводит результат в msgbox
 Numpad1::
-IfWinActive, [ЛидгенБюро] распределение по проектам - Google Таблицы - Google Chrome
+If WinExist("[ЛидгенБюро] распределение по проектам - Google Таблицы - Google Chrome")
 {
+    WinActivate ; Активирует найденное окно.
+    Sleep, 500/2 ; Пауза для обеспечения времени на активацию окна.
     Clipboard := 
     Sendinput, +{left}+^{left}
     SendInput, ^{c}

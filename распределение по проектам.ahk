@@ -40,21 +40,28 @@ clipboardContent := Clipboard
 ; Разделение содержимого по табуляции (`Tab` символ)
 array2 := StrSplit(clipboardContent, A_Tab)
 ; Применение регулярного выражения ко второму элементу массива
-if RegExMatch(array2[2], "\[[^\]]+\]", match) {
+if RegExMatch(array2[3], "\[[^\]]+\]", match) {
     ; Если найдено совпадение, заменить второй элемент массива
-    array2[2] := match
+    array2[3] := match
 }
 ; Вывод массива в MessageBox
 ; MsgBox, % "Элемент 1: " array2[1] "`nЭлемент 2: " array2[2] "`nЭлемент 3: " array2[3]
 
 Sleep, 512
 
-if (array1[2] == array2[2])
+if (array1[1] == array2[1])
 {
-    Project := True
-    ;MsgBox, Совпадение
-}
+    if (array1[2] == array2[3])
+    {
+        Project := True
+        ;MsgBox, Совпадение
+    }
 ; MsgBox, %Project%
+} Else {
+    MsgBox, Дата не совпала
+}
+
+
 
 
 ; Разделение элемента первого массива на слова
@@ -64,10 +71,10 @@ words1 := StrSplit(array1[7], " ")
 singleWord := words1[1]
 
 
-singleWord2 := array2[1]
+singleWord2 := array2[2]
 
 ; Проверка наличия singleWord в array2[1]
-if InStr(array2[1], singleWord)
+if InStr(array2[2], singleWord)
 {
     FIO := True
     ; Если найдено совпадение, вывод результата
@@ -81,12 +88,12 @@ else
 
 if Project and FIO
 {
-    Column := StrReplace(array2[3], "`r`n")
-    Column1 := StrReplace(array2[4], "`r`n")
-    Column2 := StrReplace(array2[5], "`r`n")
-    Column3 := StrReplace(array2[6], "`r`n")
+    Column := StrReplace(array2[4], "`r`n")
+    Column1 := StrReplace(array2[5], "`r`n")
+    Column2 := StrReplace(array2[6], "`r`n")
+    Column3 := StrReplace(array2[7], "`r`n")
     Sendinput, +{space}
-    Sendinput, ^{-}
+    Sendinput, ^{-}{down}
     Sleep, 100
     Sendinput, !{tab}
     Sleep, 512
@@ -101,7 +108,7 @@ if Project and FIO
 }
 Else
 {
-    MsgBox, Проект: %Project%`r`nFIO: %FIO%
+    MsgBox, Проект: %Project%`r`nFIO: %FIO% 
 }
 
 return

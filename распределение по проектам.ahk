@@ -32,7 +32,8 @@ Sendinput, !{tab}
 Sleep, 512
 
 Clipboard :=
-Sendinput, +^{Right}
+Sendinput, ^{Left}
+SendInput, +^{Right}
 SendInput, ^{c}
 ClipWait
 ; Получить содержимое буфера обмена
@@ -58,7 +59,7 @@ if (array1[1] == array2[1])
     }
 ; MsgBox, %Project%
 } Else {
-    MsgBox, Дата не совпала
+    MsgBox, Дата не совпала 
 }
 
 
@@ -89,22 +90,22 @@ else
 if Project and FIO
 {
     Column := StrReplace(array2[4], "`r`n")
-    Column1 := StrReplace(array2[5], "`r`n")
-    Column2 := StrReplace(array2[6], "`r`n")
-    Column3 := StrReplace(array2[7], "`r`n")
+    ; Column1 := StrReplace(array2[5], "`r`n")
+    ; Column2 := StrReplace(array2[6], "`r`n")
+    ; Column3 := StrReplace(array2[7], "`r`n")
     Sendinput, +{space}
     Sendinput, ^{-}{down}
     Sleep, 100
     Sendinput, !{tab}
     Sleep, 512
-    Sendinput, %Column%{Right}%Column1%{Right}%Column2%{Right}%Column3%
+    Sendinput, %Column%{Right} ; %Column1%{Right}%Column2%{Right}%Column3%
     Sleep, 512+512
-    Send, {down}
-    loop 3
-    {
-        Sleep, 100
-        Send, {Left}
-    }
+    Send, {down}{Left}
+    ;loop 1
+    ;{
+    ;    Sleep, 100
+    ;    Send, {Left}
+    ;}
 }
 Else
 {

@@ -98,9 +98,9 @@ if Project and FIO
     Sleep, 100
     Sendinput, !{tab}
     Sleep, 512
-    Sendinput, %Column%{Right} ; %Column1%{Right}%Column2%{Right}%Column3%
+    Sendinput, %Column%;{Right}%Column1%{Right}%Column2%{Right}%Column3%
     Sleep, 512+512
-    Send, {down}{Left}
+    Send, {down}
     ;loop 1
     ;{
     ;    Sleep, 100

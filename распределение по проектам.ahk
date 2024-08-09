@@ -1,12 +1,7 @@
 ﻿#SingleInstance,force
 
 
-Numpad2::
-IfWinActive, [ЛидгенБюро] распределение по проектам - Google Таблицы - Google Chrome
-If WinExist("[ЛидгенБюро] распределение по проектам - Google Таблицы - Google Chrome")
-WinActivate ; Активирует найденное окно.
-MsgBox, [ Options, Title, Активно, Timeout]
-Return
+
 
 ; Скрипт выполняет комбинацию +{down 3}^{c} при нажатии на numpad1 и выводит результат в msgbox
 Numpad1::
@@ -55,11 +50,15 @@ if (array1[1] == array2[1])
     if (array1[2] == array2[3])
     {
         Project := True
-        ;MsgBox, Совпадение
+       ; MsgBox, Совпадение
+    } Else {
+        MsgBox, Проект не совпал
+        Reload
     }
 ; MsgBox, %Project%
 } Else {
     MsgBox, Дата не совпала 
+    Reload
 }
 
 
@@ -94,11 +93,11 @@ if Project and FIO
     ; Column2 := StrReplace(array2[6], "`r`n")
     ; Column3 := StrReplace(array2[7], "`r`n")
     Sendinput, +{space}
-    Sendinput, ^{-}{down}
+    Sendinput, ^{-}{Up}
     Sleep, 100
     Sendinput, !{tab}
     Sleep, 512
-    Sendinput, %Column%;{Right}%Column1%{Right}%Column2%{Right}%Column3%
+    Sendinput, %Column% ;{Right}%Column1%{Right}%Column2%{Right}%Column3%
     Sleep, 512+512
     Send, {down}
     ;loop 1
@@ -114,6 +113,72 @@ Else
 
 return
 
+
+Numpad2::
+{
+    If WinExist("Calls total 30.06.2024—21.07.2024 - Excel")
+{
+    WinActivate ; Активирует найденное окно.
+    Sleep, 500/2 ; Пауза для обеспечения времени на активацию окна.
+    Click 613, 247
+    SendInput, {Up 3}{Space}{Down}{Space}{Enter}
+    Sleep, 256+256
+    SendInput, ^{up 2}{Down}^{c}
+}
+}
+Return
+
+Numpad3::
+{
+    SendInput, ^{up 2}{down}+^{down}+{Space}^{-}
+    Click 613, 247
+    Sleep, 512
+    imageSearch, x, y, 0, 0, A_ScreenWidth, A_ScreenHeight, C:\Users\WiKi\Pictures\AHK\ВыделитьВсе.png
+        if (ErrorLevel = 0){
+            Click -11, -6
+            Sleep, 128
+            Click 344, 245
+            Sleep, 512
+            SendInput, {Up 2}{down}{Space}{Enter}
+        } Else {
+            SendInput, {Up 2}{down}{Space}{Enter}
+            Sleep, 512
+            SendInput, ^{up 2}{Down}
+            Sleep, 512
+            SendInput, ^{c}
+            Sleep, 128
+            If WinExist("[ЛидгенБюро] распределение по проектам - Google Таблицы - Google Chrome")
+            {
+                WinActivate ; Активирует найденное окно.
+                Sleep, 500/2 ; Пауза для обеспечения времени на активацию окна.
+                Click 317, 343
+                Sleep, 256+256
+                SendInput, {Tab 5}{Space}{Tab}^{v}
+            }
+        }
+
+}
+Return
+
+
+
+
+/*
+ПоискИзображения: ;
+while (true) {
+	sleep 128
+	imageSearch, x, y, 0, 0, A_ScreenWidth, A_ScreenHeight, C:\Users\WIKI\Desktop\Интеграции СЗ\Image\Сотрудники.png
+	if (ErrorLevel = 0){
+		;MsgBox, OK
+		x += 300
+		Click %x%, %y%
+		y += 76
+		Click %x%, %y%
+	break
+	}
+}
+Return
+*/
 
 
 End::

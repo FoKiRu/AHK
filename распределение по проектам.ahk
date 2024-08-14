@@ -65,7 +65,7 @@ if (array1[1] == array2[1])
 
 
 ; Разделение элемента первого массива на слова
-words1 := StrSplit(array1[7], " ")
+words1 := StrSplit(array1[5], " ")
 
 ; Удаление второго слова
 singleWord := words1[1]

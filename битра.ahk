@@ -8,7 +8,7 @@ Numpad1:: ; Горячая клавиша для активации скрипт
     IfWinActive, Сделки - Google Chrome
     {
         SendInput, {Esc}{PgUp}
-        Sleep, 1500
+        Sleep, 500
     }
 	If WinExist("Не отправленные лиды - Excel")
         {
